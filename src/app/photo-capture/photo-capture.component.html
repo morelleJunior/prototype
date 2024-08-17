@@ -1,12 +1,32 @@
 <div class="camera-container">
-    <webcam [trigger]="triggerObservable"
-            (imageCapture)="handleImage($event)"></webcam>
-  
-    <button (click)="triggerSnapshot()">Capture Photo</button>
-  
-    <div *ngIf="webcamImage">
-      <img [src]="webcamImage.imageAsDataUrl" alt="Captured photo">
-    </div> 
-    
+  <div class="switch-holder">
+    <div class="switch-label">
+      <i class="fa fa-bluetooth-b"></i><span>Câmera</span>
+    </div>
+    <div class="switch-toggle">
+      <input type="checkbox" id="bluetooth" [(ngModel)]="isCameraOn">
+      <label for="bluetooth"></label>
+    </div>
   </div>
-  
+
+  <!-- Renderize o webcam apenas no lado do cliente -->
+  <webcam *ngIf="isBrowser && isCameraOn" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"></webcam>
+
+  <button (click)="triggerSnapshot()">Capture Photo</button>
+
+  <div class="gallery">
+    <h3>Imagens Capturadas</h3>
+    <div class="thumbnails">
+      <div *ngFor="let img of capturedImages; let i = index" class="thumbnail-container">
+        <img [src]="img.imageAsDataUrl" (click)="openImage(img)" class="thumbnail" alt="Captured photo">
+        <button class="delete-button" (click)="deleteImage(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="selectedImage" class="image-modal" (click)="closeImage()">
+    <img [src]="selectedImage.imageAsDataUrl" alt="Selected photo">
+  </div>
+</div>

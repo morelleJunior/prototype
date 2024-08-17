@@ -5,6 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PhotoCaptureComponent } from './photo-capture/photo-capture.component';
 import { WebcamModule } from 'ngx-webcam';
+import { FormsModule } from '@angular/forms';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @NgModule({
   declarations: [
@@ -13,13 +17,14 @@ import { WebcamModule } from 'ngx-webcam';
   ],
   imports: [
     BrowserModule,
-
+    FormsModule,
     AppRoutingModule,
-    
-    WebcamModule
+    WebcamModule,
+    MatIconModule
   ],
   providers: [
-    provideClientHydration()
+    provideClientHydration(),
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
 })
