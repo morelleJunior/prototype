@@ -9,10 +9,21 @@
     </div>
   </div>
 
-  <!-- Renderize o webcam apenas no lado do cliente -->
   <webcam *ngIf="isBrowser && isCameraOn" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"></webcam>
 
-  <button (click)="triggerSnapshot()">Capture Photo</button>
+  <button (click)="triggerSnapshot()">Capturar Foto</button>
+
+  <div *ngIf="webcamImage">
+    <button (click)="sendCapturedImage()">Enviar Imagem para API</button>
+  </div>
+
+  <!-- Mensagens de Feedback -->
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
 
   <div class="gallery">
     <h3>Imagens Capturadas</h3>

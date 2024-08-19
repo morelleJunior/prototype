@@ -1,5 +1,6 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 
@@ -13,10 +14,13 @@ export class PhotoCaptureComponent {
   public capturedImages: WebcamImage[] = [];
   public selectedImage: WebcamImage | null = null;
   public isCameraOn = true;
-  private trigger: Subject<void> = new Subject<void>();
   public isBrowser: boolean;
+  public errorMessage: string | null = null;
+  public successMessage: string | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  private trigger: Subject<void> = new Subject<void>();
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -30,11 +34,48 @@ export class PhotoCaptureComponent {
     if (this.isBrowser && webcamImage instanceof WebcamImage) {
       this.webcamImage = webcamImage;
       this.capturedImages.push(webcamImage);
-      console.log('Received webcam image', webcamImage);
+      console.log('Imagem capturada', webcamImage);
     } else {
-      console.error('Error: The event received is not a valid WebcamImage');
+      console.error('Erro: O evento recebido não é uma WebcamImage válida');
     }
   }
+
+  public sendCapturedImage(): void {
+    if (this.webcamImage) {
+      const jsonData = this.prepareJsonData(this.webcamImage.imageAsDataUrl);
+
+      this.sendImageData(jsonData);
+    } else {
+      this.errorMessage = 'Nenhuma imagem capturada para enviar';
+    }
+  }
+
+  private prepareJsonData(imageBase64: string): any {
+    return {
+      dryer_model_id: 1,
+      correctly_assembled: true,
+      fileBase64: imageBase64
+    };
+  }
+
+  private sendImageData(jsonData: any): void {
+    const apiUrl = '/api/images'; 
+
+    this.http.post(apiUrl, jsonData, { responseType: 'json' }).subscribe(
+      response => {
+        this.successMessage = 'Imagem enviada com sucesso';
+        this.errorMessage = null;
+        console.log('Resposta da API:', response);
+      },
+      error => {
+        this.errorMessage = 'Erro ao enviar imagem: ' + (error.error?.message || error.message || 'Desconhecido');
+        this.successMessage = null;
+        console.error('Erro ao enviar imagem', error);
+      }
+    );
+  }
+
+
 
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
