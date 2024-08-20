@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "https://taiffapi.avlq.online/image",
+      "target": "https://taiffapi.avlq.online/imagens",
       "secure": false,
       "changeOrigin": true,
       "pathRewrite": {

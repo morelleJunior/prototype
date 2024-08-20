@@ -67,7 +67,7 @@ export class PhotoCaptureComponent {
   }
 
   private sendImageData(jsonData: any): void {
-    const apiUrl = '/api/images'; 
+    const apiUrl = '/api'; 
 
     this.http.post(apiUrl, jsonData, { responseType: 'json' }).subscribe(
       response => {
@@ -78,7 +78,7 @@ export class PhotoCaptureComponent {
       error => {
         this.errorMessage = 'Erro ao enviar imagem: ' + (error.error?.message || error.message || 'Desconhecido');
         this.successMessage = null;
-        console.error('Erro ao enviar imagem', error);
+        console.error('Erro ao enviar imagem', error, jsonData);
       }
     );
   }
