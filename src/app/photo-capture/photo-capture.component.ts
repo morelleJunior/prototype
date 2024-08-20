@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 
+
 @Component({
   selector: 'app-photo-capture',
   templateUrl: './photo-capture.component.html',
