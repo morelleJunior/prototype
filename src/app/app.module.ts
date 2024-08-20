@@ -25,7 +25,7 @@ import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch())  // Adiciona suporte para as APIs fetch
+    provideHttpClient(withFetch()) 
   ],
   bootstrap: [AppComponent]
 })
