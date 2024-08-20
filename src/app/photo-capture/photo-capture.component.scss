@@ -1,3 +1,14 @@
+.camera-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+}
+
 .switch-holder {
   margin-bottom: 1rem;
   display: flex;
@@ -8,10 +19,14 @@
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
     rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   align-items: center;
+  width: 100%;
+  max-width: 400px;
+  justify-content: space-between;
 }
 
 .switch-label {
-  padding: 0 20px 0 10px;
+  display: flex;
+  align-items: center;
 }
 
 .switch-label i {
@@ -66,14 +81,56 @@
     3px 3px 5px #00b33c;
 }
 
-.camera-container {
+.image-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+
+.capture-camera-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 100%;
 }
 
-button {
+.mirrored {
+  max-width: 100%;
+}
+  
+
+.capture-button,
+.send-button {
   margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.gallery-container {
+  width: 100%;
+}
+
+.gallery h3 {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
 }
 
 img {
@@ -81,14 +138,11 @@ img {
   max-width: 100%;
 }
 
-.gallery {
-  margin-top: 20px;
-}
-
 .thumbnails {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  justify-content: center;
 }
 
 .thumbnail-container {
@@ -112,20 +166,11 @@ img {
 .delete-button {
   position: absolute;
   top: 5px;
-  right: 5px;
-  background-color: rgba(255, 0, 0, 0.7);
-  border: none;
-  color: white;
-  padding: 5px;
+  right: 1px;
   cursor: pointer;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.delete-button:hover {
-  background-color: rgba(255, 0, 0, 1);
 }
 
 mat-icon {
@@ -149,4 +194,56 @@ mat-icon {
 .image-modal img {
   max-width: 90%;
   max-height: 90%;
+}
+
+//button remove
+
+/* From Uiverse.io by hannahyockel */
+button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.3em;
+  border: 0px solid transparent;
+  background-color: transparent;
+  border-radius: 1.25em;
+  transition: all 0.2s linear;
+}
+
+mat-icon:hover {
+  color: red;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 4em;
+  background-color: rgba(0, 0, 0, 0.253);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 25%;
+  left: 110%;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent rgba(0, 0, 0, 0.253) transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

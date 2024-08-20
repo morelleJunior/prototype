@@ -19,22 +19,30 @@ export class PhotoCaptureComponent {
   public successMessage: string | null = null;
 
   private trigger: Subject<void> = new Subject<void>();
+  private readonly maxImages = 10;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
   public triggerSnapshot(): void {
-    if (this.isBrowser) {
+    if (this.isBrowser && this.capturedImages.length < this.maxImages) {
       this.trigger.next();
+    } else {
+      this.errorMessage = `Você só pode capturar até ${this.maxImages} imagens.`;
     }
   }
 
   public handleImage(webcamImage: WebcamImage): void {
     if (this.isBrowser && webcamImage instanceof WebcamImage) {
-      this.webcamImage = webcamImage;
-      this.capturedImages.push(webcamImage);
-      console.log('Imagem capturada', webcamImage);
+      if (this.capturedImages.length < this.maxImages) {
+        this.webcamImage = webcamImage;
+        this.capturedImages.push(webcamImage);
+        console.log('Imagem capturada', webcamImage);
+        this.errorMessage = null;
+      } else {
+        this.errorMessage = `Limite de ${this.maxImages} imagens atingido.`;
+      }
     } else {
       console.error('Erro: O evento recebido não é uma WebcamImage válida');
     }
@@ -43,7 +51,6 @@ export class PhotoCaptureComponent {
   public sendCapturedImage(): void {
     if (this.webcamImage) {
       const jsonData = this.prepareJsonData(this.webcamImage.imageAsDataUrl);
-
       this.sendImageData(jsonData);
     } else {
       this.errorMessage = 'Nenhuma imagem capturada para enviar';
@@ -74,8 +81,6 @@ export class PhotoCaptureComponent {
       }
     );
   }
-
-
 
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
