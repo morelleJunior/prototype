@@ -4,7 +4,7 @@ import { PhotoCaptureComponent } from './photo-capture/photo-capture.component';
 
 const routes: Routes = [
   { path: '', component: PhotoCaptureComponent },
-  { path: '**', redirectTo: '', pathMatch: 'full' } 
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({
