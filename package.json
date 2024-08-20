@@ -2,12 +2,11 @@
   "name": "prototype",
   "version": "0.0.0",
   "scripts": {
-    "build": "ng build --output-path=dist/cloudflare",
     "ng": "ng",
     "start": "ng serve",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:prototype": "node dist/prototype/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
