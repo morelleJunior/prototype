@@ -1,8 +1,19 @@
 {
-    "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://taiffapi.avlq.online/:path*"
-      }
-    ]
-  }
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://taiffapi.avlq.online/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
+}
