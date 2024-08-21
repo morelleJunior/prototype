@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 
-
 @Component({
   selector: 'app-photo-capture',
   templateUrl: './photo-capture.component.html',
@@ -18,6 +17,7 @@ export class PhotoCaptureComponent {
   public isBrowser: boolean;
   public errorMessage: string | null = null;
   public successMessage: string | null = null;
+  public isLoading = false;
 
   private trigger: Subject<void> = new Subject<void>();
   private readonly maxImages = 10;
@@ -49,10 +49,13 @@ export class PhotoCaptureComponent {
     }
   }
 
-  public sendCapturedImage(): void {
-    if (this.webcamImage) {
-      const jsonData = this.prepareJsonData(this.webcamImage.imageAsDataUrl);
-      this.sendImageData(jsonData);
+  public sendCapturedImages(): void {
+    if (this.capturedImages.length > 0) {
+      this.isLoading = true; 
+      this.capturedImages.forEach((image, index) => {
+        const jsonData = this.prepareJsonData(image.imageAsDataUrl);
+        this.sendImageData(jsonData, index);
+      });
     } else {
       this.errorMessage = 'Nenhuma imagem capturada para enviar';
     }
@@ -66,18 +69,22 @@ export class PhotoCaptureComponent {
     };
   }
 
-  private sendImageData(jsonData: any): void {
+  private sendImageData(jsonData: any, index: number): void {
     const apiUrl = '/api'; 
 
     this.http.post(apiUrl, jsonData, { responseType: 'json' }).subscribe(
       response => {
-        this.successMessage = 'Imagem enviada com sucesso';
-        this.errorMessage = null;
+        this.successMessage = `Imagens Enviadas com Sucesso`;
+        this.capturedImages.splice(index, 1);
         console.log('Resposta da API:', response);
+        if (this.capturedImages.length === 0) {
+          this.isLoading = false; 
+        }
       },
       error => {
-        this.errorMessage = 'Erro ao enviar imagem: ' + (error.error?.message || error.message || 'Desconhecido');
+        this.errorMessage = `Erro ao enviar imagem ${index + 1}: ` + (error.error?.message || error.message || 'Desconhecido');
         this.successMessage = null;
+        this.isLoading = false;
         console.error('Erro ao enviar imagem', error, jsonData);
       }
     );

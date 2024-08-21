@@ -1,13 +1,4 @@
 <div class="camera-container">
-  <div class="switch-holder">
-    <div class="switch-label">
-      <i class="fa fa-bluetooth-b"></i><span>Câmera</span>
-    </div>
-    <div class="switch-toggle">
-      <input type="checkbox" id="bluetooth" [(ngModel)]="isCameraOn">
-      <label for="bluetooth"></label>
-    </div>
-  </div>
 
   <!--ng Feedback -->
   <div *ngIf="successMessage" class="success-message">
@@ -17,9 +8,25 @@
     {{ errorMessage }}
   </div>
 
+  
+  <div *ngIf="isLoading" class="loader">
+    <label>Enviando imagens...</label>
+    <div class="loading"></div>
+  </div>
+
   <div class="image-container">
+
     
     <div class="capture-camera-container">
+      <div class="switch-holder">
+        <div class="switch-label">
+          <i class="fa fa-bluetooth-b"></i><span>Câmera</span>
+        </div>
+        <div class="switch-toggle">
+          <input type="checkbox" id="bluetooth" [(ngModel)]="isCameraOn">
+          <label for="bluetooth"></label>
+        </div>
+      </div>
       <webcam *ngIf="isBrowser && isCameraOn" [trigger]="triggerObservable" (imageCapture)="handleImage($event)">
       </webcam>
       <button class="capture-button" (click)="triggerSnapshot()">Capturar Foto</button>
@@ -29,9 +36,11 @@
     <div class="gallery-container">
       <div class="gallery">
         <h3>Imagens Capturadas</h3>
+
         <div class="thumbnails">
           <div *ngFor="let img of capturedImages; let i = index" class="thumbnail-container">
             <img [src]="img.imageAsDataUrl" (click)="openImage(img)" class="thumbnail" alt="Captured photo">
+
             <div class="delete-button" >
               <button class="tooltip" (click)="deleteImage(i)">
                 <mat-icon>delete</mat-icon>
@@ -43,13 +52,16 @@
         </div>
       </div>
 
-      <div *ngIf="selectedImage" class="image-modal" (click)="closeImage()">
+      <div *ngIf="selectedImage && !isLoading " class="image-modal" (click)="closeImage()">
         <img [src]="selectedImage.imageAsDataUrl" alt="Selected photo">
       </div>
     </div>
   </div>
 
-  <div *ngIf="webcamImage">
-    <button class="send-button" (click)="sendCapturedImage()">Enviar Imagens</button>
+  <div *ngIf="capturedImages.length > 0 && !isLoading">
+    <button class="send-button" (click)="sendCapturedImages()">Enviar Imagens</button>
   </div>
 </div>
+
+
+
