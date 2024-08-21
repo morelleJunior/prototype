@@ -1,67 +1,90 @@
 <div class="camera-container">
 
-  <!--ng Feedback -->
-  <div *ngIf="successMessage" class="success-message">
-    {{ successMessage }}
-  </div>
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
-  </div>
-
-  
-  <div *ngIf="isLoading" class="loader">
-    <label>Enviando imagens...</label>
-    <div class="loading"></div>
-  </div>
-
   <div class="image-container">
 
-    
-    <div class="capture-camera-container">
-      <div class="switch-holder">
-        <div class="switch-label">
-          <i class="fa fa-bluetooth-b"></i><span>Câmera</span>
+    <div class="gallery-container">
+
+      <div class="capture-camera-container">
+
+        <div>
+          <webcam *ngIf="isBrowser && isCameraOn" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+            class="custom-webcam">
+          </webcam>
+
+          <div class="camera-action-button">
+            <button class="capture-button" (click)="startTimer()">Capturar Foto</button>
+          </div>
         </div>
-        <div class="switch-toggle">
-          <input type="checkbox" id="bluetooth" [(ngModel)]="isCameraOn">
-          <label for="bluetooth"></label>
+
+      </div>
+
+      <!--ng Feedback -->
+      <div class="message-container">
+        <div>
+          <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+          </div>
+          <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+          </div>
         </div>
       </div>
-      <webcam *ngIf="isBrowser && isCameraOn" [trigger]="triggerObservable" (imageCapture)="handleImage($event)">
-      </webcam>
-      <button class="capture-button" (click)="triggerSnapshot()">Capturar Foto</button>
-
-    </div>
-
-    <div class="gallery-container">
       <div class="gallery">
-        <h3>Imagens Capturadas</h3>
+
+        <h3>Imagens</h3>
+
+        <div class="loader-container">
+          <div *ngIf="isLoading" class="loader">
+            <label>Enviando imagens...</label>
+            <div class="loading"></div>
+          </div>
+        </div>
 
         <div class="thumbnails">
-          <div *ngFor="let img of capturedImages; let i = index" class="thumbnail-container">
-            <img [src]="img.imageAsDataUrl" (click)="openImage(img)" class="thumbnail" alt="Captured photo">
+          <div *ngFor="let imgData of capturedImages; let i = index" class="thumbnail-container">
+            <img [src]="imgData.image.imageAsDataUrl" (click)="openImage(imgData.image)" class="thumbnail"
+              alt="Captured photo">
 
-            <div class="delete-button" >
+            <div class="delete-button">
               <button class="tooltip" (click)="deleteImage(i)">
                 <mat-icon>delete</mat-icon>
                 <span class="tooltiptext">Remover</span>
               </button>
             </div>
 
+            <div class="evaluation-container">
+              <label>
+                <input type="radio" [name]="'evaluation' + i" [(ngModel)]="imgData.correctlyAssembled" [value]="false"
+                  class="dislike" />
+                <svg class="icon dislike" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path
+                    d="M20 3H6.693A2.01 2.01 0 0 0 4.82 4.298l-2.757 7.351A1 1 0 0 0 2 12v2c0 1.103.897 2 2 2h5.612L8.49 19.367a2.004 2.004 0 0 0 .274 1.802c.376.52.982.831 1.624.831H12c.297 0 .578-.132.769-.36l4.7-5.64H20c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zm-8.469 17h-1.145l1.562-4.684A1 1 0 0 0 11 14H4v-1.819L6.693 5H16v9.638L11.531 20zM18 14V5h2l.001 9H18z">
+                  </path>
+                </svg>
+              </label>
+              <label>
+                <input type="radio" [name]="'evaluation' + i" [(ngModel)]="imgData.correctlyAssembled" [value]="true"
+                  class="like" />
+                <svg class="icon like" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path
+                    d="M20 8h-5.612l1.123-3.367c.202-.608.1-1.282-.275-1.802S14.253 2 13.612 2H12c-.297 0-.578.132-.769.36L6.531 8H4c-1.103 0-2 .897-2 2v9c0 1.103.897 2 2 2h13.307a2.01 2.01 0 0 0 1.873-1.298l2.757-7.351A1 1 0 0 0 22 12v-2c0-1.103-.897-2-2-2zM4 10h2v9H4v-9zm16 1.819L17.307 19H8V9.362L12.468 4h1.146l-1.562 4.683A.998.998 0 0 0 13 10h7v1.819z">
+                  </path>
+                </svg>
+              </label>
+            </div>
           </div>
         </div>
       </div>
 
-      <div *ngIf="selectedImage && !isLoading " class="image-modal" (click)="closeImage()">
+
+      <div *ngIf="selectedImage && !isLoading" class="image-modal" (click)="closeImage()">
         <img [src]="selectedImage.imageAsDataUrl" alt="Selected photo">
+      </div>
+
+
+      <div *ngIf="capturedImages.length > 0 && !isLoading" class="send-button-container">
+        <button class="send-button" (click)="sendCapturedImages()">Enviar Imagens</button>
       </div>
     </div>
   </div>
-
-  <div *ngIf="capturedImages.length > 0 && !isLoading">
-    <button class="send-button" (click)="sendCapturedImages()">Enviar Imagens</button>
-  </div>
 </div>
-
-
-

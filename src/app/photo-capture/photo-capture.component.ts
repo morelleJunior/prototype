@@ -4,14 +4,19 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 
+interface CapturedImageData {
+  image: WebcamImage;
+  correctlyAssembled: boolean;
+}
+
 @Component({
   selector: 'app-photo-capture',
   templateUrl: './photo-capture.component.html',
   styleUrls: ['./photo-capture.component.scss']
 })
+
 export class PhotoCaptureComponent {
-  public webcamImage: WebcamImage | null = null;
-  public capturedImages: WebcamImage[] = [];
+  public capturedImages: CapturedImageData[] = [];
   public selectedImage: WebcamImage | null = null;
   public isCameraOn = true;
   public isBrowser: boolean;
@@ -19,8 +24,11 @@ export class PhotoCaptureComponent {
   public successMessage: string | null = null;
   public isLoading = false;
 
+  public timer: number | null = null;
+  public showTimer = false;
+
   private trigger: Subject<void> = new Subject<void>();
-  private readonly maxImages = 10;
+  private readonly maxImages = 5;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -31,15 +39,36 @@ export class PhotoCaptureComponent {
       this.trigger.next();
     } else {
       this.errorMessage = `Você só pode capturar até ${this.maxImages} imagens.`;
+      this.successMessage = null;
     }
+  }
+
+  public startTimer(): void {
+    if (this.timer && this.timer > 0) {
+      this.showTimer = true;
+      const interval = setInterval(() => {
+        if (this.timer && this.timer > 0) {
+          this.timer--;
+        } else {
+          clearInterval(interval);
+          this.showTimer = false;
+          this.triggerSnapshot();
+        }
+      }, 1000);
+    } else {
+      this.triggerSnapshot();
+    }
+    this.successMessage = null
   }
 
   public handleImage(webcamImage: WebcamImage): void {
     if (this.isBrowser && webcamImage instanceof WebcamImage) {
       if (this.capturedImages.length < this.maxImages) {
-        this.webcamImage = webcamImage;
-        this.capturedImages.push(webcamImage);
-        console.log('Imagem capturada', webcamImage);
+        const newImage: CapturedImageData = {
+          image: webcamImage,
+          correctlyAssembled: true 
+        };
+        this.capturedImages.push(newImage);
         this.errorMessage = null;
       } else {
         this.errorMessage = `Limite de ${this.maxImages} imagens atingido.`;
@@ -52,8 +81,8 @@ export class PhotoCaptureComponent {
   public sendCapturedImages(): void {
     if (this.capturedImages.length > 0) {
       this.isLoading = true; 
-      this.capturedImages.forEach((image, index) => {
-        const jsonData = this.prepareJsonData(image.imageAsDataUrl);
+      this.capturedImages.forEach((imageData, index) => {
+        const jsonData = this.prepareJsonData(imageData);
         this.sendImageData(jsonData, index);
       });
     } else {
@@ -61,20 +90,22 @@ export class PhotoCaptureComponent {
     }
   }
 
-  private prepareJsonData(imageBase64: string): any {
+  private prepareJsonData(imageData: CapturedImageData): any {
     return {
       dryer_model_id: 1,
-      correctly_assembled: true,
-      fileBase64: imageBase64
+      correctly_assembled: imageData.correctlyAssembled,
+      fileBase64: imageData.image.imageAsDataUrl
     };
   }
 
+  
   private sendImageData(jsonData: any, index: number): void {
-    const apiUrl = 'https://taiffapi.avlq.online/images'; 
-
+    const apiUrl = '/api'; 
+  
     this.http.post(apiUrl, jsonData, { responseType: 'json' }).subscribe(
       response => {
         this.successMessage = `Imagens Enviadas com Sucesso`;
+        this.errorMessage = null;
         this.capturedImages.splice(index, 1);
         console.log('Resposta da API:', response);
         if (this.capturedImages.length === 0) {
@@ -89,7 +120,7 @@ export class PhotoCaptureComponent {
       }
     );
   }
-
+  
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
   }

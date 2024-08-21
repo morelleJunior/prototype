@@ -1,86 +1,3 @@
-.camera-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  
-  @media (max-width: 768px) {
-    padding: 10px;
-  }
-}
-
-.switch-holder {
-  margin-bottom: 1rem;
-  display: flex;
-  padding: 10px 20px;
-  border-radius: 10px;
-  box-shadow:
-    rgba(0, 0, 0, 0.4) 0px 2px 4px,
-    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
-    rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  align-items: center;
-  width: 100%;
-  max-width: 400px;
-  justify-content: space-between;
-}
-
-.switch-label {
-  display: flex;
-  align-items: center;
-}
-
-.switch-label i {
-  margin-right: 5px;
-}
-
-.switch-toggle {
-  height: 40px;
-}
-
-.switch-toggle input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  z-index: -2;
-}
-
-.switch-toggle input[type="checkbox"] + label {
-  position: relative;
-  display: inline-block;
-  width: 100px;
-  height: 40px;
-  border-radius: 20px;
-  margin: 0;
-  cursor: pointer;
-  box-shadow:
-    inset -8px -8px 15px rgba(255, 255, 255, 0.6),
-    inset 10px 10px 10px rgba(0, 0, 0, 0.25);
-}
-
-.switch-toggle input[type="checkbox"] + label::before {
-  position: absolute;
-  content: "OFF";
-  font-size: 13px;
-  text-align: center;
-  line-height: 25px;
-  top: 8px;
-  left: 8px;
-  width: 45px;
-  height: 25px;
-  border-radius: 20px;
-  background-color: #eeeeee;
-  transition: 0.3s ease-in-out;
-}
-
-.switch-toggle input[type="checkbox"]:checked + label::before {
-  left: 50%;
-  content: "ON";
-  color: #fff;
-  background-color: #00b33c;
-  box-shadow:
-    -3px -3px 5px rgba(255, 255, 255, 0.5),
-    3px 3px 5px #00b33c;
-}
-
 .image-container {
   display: flex;
   flex-direction: row;
@@ -94,23 +11,49 @@
   }
 }
 
+.message-container {
+  display: flex;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: #ff3232;
+}
 
 .capture-camera-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 100%;
+  justify-content: center;
 }
 
-.mirrored {
+::ng-deep video {
   max-width: 100%;
+  height: auto !important;
+  border-radius: 20px;
+  box-shadow: 0 4px 35px rgba(0, 0, 0, 0.1);
 }
-  
+
+.camera-action-button{
+  display: flex;
+  justify-content: space-between;
+}
+
+.camera-action-button button{
+  margin: 0rem 0.5rem 1rem 0;
+}
+
+.send-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+}
 
 .capture-button,
 .send-button {
-  margin-top: 20px;
-  margin-bottom: 20px;
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -124,7 +67,22 @@
 }
 
 .gallery-container {
+  margin: 1rem;
   width: 100%;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.webcam {
+  background-color: inherit;
+  -webkit-box-shadow: 0 4px 35px rgba(0,0,0,.1);
+  box-shadow: 0 4px 35px rgba(0,0,0,.1);
+  border-radius: 40px;
+}
+
+.gallery {
+  margin: 1rem;
+  min-height: 200px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
 .gallery h3 {
@@ -249,6 +207,93 @@ mat-icon:hover {
 }
 
 
+//Radio Buttons
+
+.evaluation-container {
+  --col-gray: #3f3f3f;
+  --col-white: #fff;
+  --col-like: #2196f3;
+  --col-dislike: #ff3232;
+  --transition: 350ms;
+  background-color: var(--col-gray);
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  margin-bottom: 1rem;
+}
+.evaluation-container:has(.like:checked) .count {
+  border-left-color: var(--col-like);
+  border-right-color: transparent;
+}
+.evaluation-container label input {
+  display: none;
+}
+.evaluation-container .like:checked + svg {
+  animation: evaluation-animation var(--transition) ease-in-out 0s 1 normal both;
+  fill: var(--col-like);
+}
+.evaluation-container .dislike:checked + svg {
+  animation: evaluation-animation var(--transition) ease-in-out 0s 1 normal both;
+  fill: var(--col-dislike);
+}
+.evaluation-container .icon {
+  cursor: pointer;
+  fill: var(--col-white);
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.evaluation-container .icon.like {
+  margin-left: 9px;
+}
+.evaluation-container .icon.dislike {
+  margin-right: 9px;
+}
+.evaluation-container .count {
+  transition: var(--transition);
+  flex: 1;
+  border-left: 1px solid var(--col-white);
+  border-right: 1px solid var(--col-white);
+  position: relative;
+  height: 24px;
+  overflow: hidden;
+  margin: auto;
+  color: white;
+  font-size: 16px;
+  font-family: sans-serif;
+  display: flex;
+  align-items: center;
+
+  justify-content: center;
+  gap: 0.5px;
+  flex-direction: row;
+}
+.evaluation-container .count .number {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(calc(50% - 8px));
+  transition: 1000ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.evaluation-container .count .number:first-child {
+  transition-delay: 200ms;
+}
+.evaluation-container .count .number:nth-child(2) {
+  transition-delay: 150ms;
+}
+.evaluation-container .count .number:last-child {
+  transition-delay: 50ms;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+}
+
 /* From Uiverse.io by Cebucoder */ 
 .loader {
   width: 350px;
@@ -260,7 +305,7 @@ mat-icon:hover {
   align-items: center;
   justify-content: space-evenly;
   padding: 30px;
-  box-shadow: 2px 2px 10px -5px lightgrey;
+  box-shadow: 2px 2px 10px -5px rgb(0, 0, 0);
 }
 .loading {
   width: 100%;
