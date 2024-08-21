@@ -100,7 +100,7 @@ export class PhotoCaptureComponent {
 
   
   private sendImageData(jsonData: any, index: number): void {
-    const apiUrl = '/api'; 
+    const apiUrl = 'https://taiffapi.avlq.online/images'; 
   
     this.http.post(apiUrl, jsonData, { responseType: 'json' }).subscribe(
       response => {
