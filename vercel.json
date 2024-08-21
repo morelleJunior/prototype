@@ -2,8 +2,7 @@
     "rewrites": [
       {
         "source": "/api/(.*)",
-        "destination": "https://taiffapi.avlq.online/images/$1"
+        "destination": "https://taiffapi.avlq.online/images"
       }
     ]
   }
-  
