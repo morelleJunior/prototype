@@ -1,8 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "/api/(.*)",
-        "destination": "https://taiffapi.avlq.online/images"
+        "source": "/api/:path*",
+        "destination": "https://taiffapi.avlq.online/:path*"
       }
     ]
   }
