@@ -8,11 +8,15 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { HeaderComponent } from './header/header.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    PhotoCaptureComponent
+    PhotoCaptureComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +24,8 @@ import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/
     AppRoutingModule,
     WebcamModule,
     MatIconModule,
-    HttpClientModule
+    HttpClientModule,
+    MatToolbarModule
   ],
   providers: [
     provideClientHydration(),

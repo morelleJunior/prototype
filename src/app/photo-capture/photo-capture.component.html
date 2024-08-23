@@ -1,10 +1,18 @@
 <div class="camera-container">
 
+
   <div class="image-container">
 
     <div class="gallery-container">
 
+      <div>
+        <button (click)="startTutorial()">
+          <a href="#" class="btn2"><span class="spn2">Aprender !</span></a>
+        </button>
+      </div>
       <div class="capture-camera-container">
+
+        <div class="capture-flash" *ngIf="showFlash"></div>
 
         <div>
           <webcam *ngIf="isBrowser && isCameraOn" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
@@ -12,10 +20,13 @@
           </webcam>
 
           <div class="camera-action-button">
-            <button class="capture-button" (click)="startTimer()">Capturar Foto</button>
-          </div>
-        </div>
+            <button class="capture-button" (click)="startTimer()" title="Clique para capturar uma foto">Capturar
+              Foto
+            </button>
 
+          </div>
+
+        </div>
       </div>
 
       <!--ng Feedback -->
@@ -74,6 +85,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div *ngIf="isLoading" class="progress-container">
+        <div class="progress-bar" [style.width.%]="uploadProgress"></div>
       </div>
 
 
