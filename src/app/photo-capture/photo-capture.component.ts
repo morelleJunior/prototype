@@ -126,10 +126,20 @@ export class PhotoCaptureComponent {
           this.sendImageRecursively(index);
         },
         error => {
-          this.errorMessage = `Erro ao enviar imagem ${index + 1}: ` + (error.error?.message || error.message || 'Desconhecido');
+          console.error('Erro ao enviar imagem:', error);
+          
+          if (error.status === 0) {
+            this.errorMessage = `Erro ao enviar imagem ${index + 1}: Não foi possível se conectar ao servidor.`;
+          } else if (error.status >= 400 && error.status < 500) {
+            this.errorMessage = `Erro ao enviar imagem ${index + 1}: Erro do cliente - ${error.message || 'Desconhecido'}`;
+          } else if (error.status >= 500) {
+            this.errorMessage = `Erro ao enviar imagem ${index + 1}: Erro do servidor - ${error.message || 'Desconhecido'}`;
+          } else {
+            this.errorMessage = `Erro ao enviar imagem ${index + 1}: ${error.message || 'Desconhecido'}`;
+          }
+          
           this.successMessage = null;
           this.isLoading = false;
-          console.error('Erro ao enviar imagem', error, jsonData);
         }
       );
     } else {
