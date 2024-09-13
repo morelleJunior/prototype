@@ -1,13 +1,13 @@
 {
   "rewrites": [
     {
-      "source": "/api",
-      "destination": "https://taiffapi.avlq.online"
+      "source": "/api/:path*",  
+      "destination": "https://taiffapi.avlq.online/:path*" 
     }
   ],
   "headers": [
     {
-      "source": "/api",
+      "source": "/api/:path*",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
