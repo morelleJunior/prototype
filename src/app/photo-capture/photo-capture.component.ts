@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 import introJs from 'intro.js';
+import { sendImageToApi, IImageData } from '../services/apiService';
 
 interface CapturedImageData {
   image: WebcamImage;
@@ -17,6 +18,7 @@ interface CapturedImageData {
 })
 
 export class PhotoCaptureComponent {
+  
   public capturedImages: CapturedImageData[] = [];
   public selectedImage: WebcamImage | null = null;
   public isCameraOn = true;
@@ -36,7 +38,7 @@ export class PhotoCaptureComponent {
   public showFlash = false;
 
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
@@ -99,49 +101,39 @@ export class PhotoCaptureComponent {
     }
   }
 
-  public sendCapturedImages(): void {
+  public async sendCapturedImages(): Promise<void> {
     if (this.capturedImages.length > 0) {
       this.isLoading = true;
-      this.sendImageRecursively(0);
+      await this.sendImageRecursively(0);
     } else {
       this.errorMessage = 'Nenhuma imagem capturada para enviar';
     }
   }
 
-  private sendImageRecursively(index: number): void {
+  private async sendImageRecursively(index: number): Promise<void> {
     if (index < this.capturedImages.length) {
-      const imageData = this.capturedImages[index];
-      const jsonData = this.prepareJsonData(imageData);
+      const imageData = this.prepareJsonData(this.capturedImages[index]);
+  
+      try {
+        const response = await sendImageToApi(imageData); 
+        console.log('Resposta da API:', response);
+  
+        this.successMessage = `Imagem ${index + 1} enviada com sucesso`;
+        this.errorMessage = null;
+        this.capturedImages.splice(index, 1);
+  
+        await this.sendImageRecursively(index);
+      } catch (error) {
+        if (error instanceof Error) {
 
-      const apiUrl = '/api';
-
-      this.http.post(apiUrl, jsonData, { responseType: 'json' }).subscribe(
-        response => {
-          console.log('Resposta da API:', response);
-
-          this.successMessage = `Imagem ${index + 1} enviada com sucesso`;
-          this.errorMessage = null;
-          this.capturedImages.splice(index, 1);
-
-          this.sendImageRecursively(index);
-        },
-        error => {
           console.error('Erro ao enviar imagem:', error);
-          
-          if (error.status === 0) {
-            this.errorMessage = `Erro ao enviar imagem ${index + 1}: Não foi possível se conectar ao servidor.`;
-          } else if (error.status >= 400 && error.status < 500) {
-            this.errorMessage = `Erro ao enviar imagem ${index + 1}: Erro do cliente - ${error.message || 'Desconhecido'}`;
-          } else if (error.status >= 500) {
-            this.errorMessage = `Erro ao enviar imagem ${index + 1}: Erro do servidor - ${error.message || 'Desconhecido'}`;
-          } else {
-            this.errorMessage = `Erro ao enviar imagem ${index + 1}: ${error.message || 'Desconhecido'}`;
-          }
-          
-          this.successMessage = null;
-          this.isLoading = false;
+          this.errorMessage = `Erro ao enviar imagem ${index + 1}: ${error.message || 'Desconhecido'}`;
+        } else {
+          console.error('Erro desconhecido ao enviar imagem:', error);
+          this.errorMessage = `Erro ao enviar imagem ${index + 1}: Erro desconhecido`;
         }
-      );
+        this.isLoading = false;
+      }
     } else {
       this.isLoading = false;
       if (this.capturedImages.length === 0) {
@@ -149,6 +141,7 @@ export class PhotoCaptureComponent {
       }
     }
   }
+
 
   private prepareJsonData(imageData: CapturedImageData): any {
     return {
