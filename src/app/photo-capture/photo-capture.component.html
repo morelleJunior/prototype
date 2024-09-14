@@ -112,6 +112,7 @@
 
   <app-image-display [imageBase64]="processedImageBase64"></app-image-display>
 
-  <app-piece-selection *ngIf="processedImageBase64" [processedCuts]="processedCuts"></app-piece-selection>
-
+  <div class="form-content-processedCuts">
+    <app-piece-selection *ngIf="processedImageBase64" [processedCuts]="processedCuts"></app-piece-selection>
+  </div>
 </div>

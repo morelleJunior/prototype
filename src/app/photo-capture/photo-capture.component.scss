@@ -30,6 +30,18 @@
 .capture-camera-container {
   display: flex;
   justify-content: center;
+
+  @media (max-width: 600px) {
+    margin: 1rem;
+
+  }
+}
+
+.form-content-processedCuts {
+  @media (max-width: 600px) {
+    margin: 0.6rem;
+    max-width: 95%;
+  }
 }
 
 ::ng-deep video {
