@@ -4,6 +4,7 @@ import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 import introJs from 'intro.js';
 import { sendImageToApi } from '../services/apiService';
+import { Piece } from '../piece-selection/piece.interface';
 
 
 interface CapturedImageData {
@@ -20,6 +21,7 @@ interface CapturedImageData {
 export class PhotoCaptureComponent {
   
   public capturedImages: CapturedImageData[] = [];
+
   public selectedImage: WebcamImage | null = null;
   public isCameraOn = true;
   public isBrowser: boolean;
@@ -39,7 +41,7 @@ export class PhotoCaptureComponent {
 
   public processedImageBase64: string | null = null;
 
-  public processedCuts: boolean = false;
+  public processedCuts: Piece[] = [];
 
   private trigger: Subject<void> = new Subject<void>();
 

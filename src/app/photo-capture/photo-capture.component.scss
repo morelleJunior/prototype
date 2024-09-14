@@ -5,6 +5,7 @@
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
+  background-color: #f5f5f5;
   
   @media (max-width: 768px) {
     flex-direction: column;
@@ -418,4 +419,28 @@ button {
   text-decoration: none;
   border: none;
   background-color: transparent;
+}
+
+
+.form-container {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center;
+  gap: 2rem; 
+  padding: 2rem;
+  background-color: #f5f5f5;
+  border-radius: 12px; 
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto; 
+
+  @media (min-width: 768px) {
+    flex-direction: row; 
+    padding: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 }

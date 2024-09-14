@@ -1,4 +1,4 @@
-<div class="camera-container"  *ngIf="!processedImageBase64">
+<div class="camera-container" *ngIf="!processedImageBase64">
 
 
   <div class="image-container">
@@ -52,7 +52,7 @@
           </div>
         </div>
 
- 
+
 
         <div class="thumbnails">
           <div *ngFor="let imgData of capturedImages; let i = index" class="thumbnail-container">
@@ -106,5 +106,12 @@
   </div>
 </div>
 
-<app-image-display [imageBase64]="processedImageBase64"></app-image-display>
 
+
+<div class="form-container" *ngIf="processedImageBase64">
+
+  <app-image-display [imageBase64]="processedImageBase64"></app-image-display>
+
+  <app-piece-selection *ngIf="processedImageBase64" [processedCuts]="processedCuts"></app-piece-selection>
+
+</div>

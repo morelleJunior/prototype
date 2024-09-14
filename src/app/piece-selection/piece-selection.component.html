@@ -1,1 +1,21 @@
-<p>piece-selection works!</p>
+<div class="piece-selection-container">
+
+
+  <h3 class="title">Selecione as peças incorretamente montadas:</h3>
+
+  <mat-selection-list #pieces class="piece-list" (selectionChange)="updateSelectedOptions(pieces.selectedOptions.selected)">
+    <mat-list-option *ngFor="let piece of processedCuts" [value]="piece" class="piece-item">
+      <mat-icon aria-hidden="false" aria-label="Piece icon">build</mat-icon>
+      {{ piece.name }}
+    </mat-list-option>
+  </mat-selection-list>
+
+  <p class="feedback">
+    Peças incorretas selecionadas: <strong>{{ selectedOptions.length }}</strong>
+  </p>
+
+  <button mat-raised-button color="primary" class="submit-button" (click)="submitResult()" name="submitButton">
+    Enviar Resultado
+  </button>
+</div>
+

@@ -11,9 +11,14 @@ import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { HeaderComponent } from './header/header.component';
 import { ImageDisplayComponent } from './image-display/image-display.component';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { PieceSelectionComponent } from './piece-selection/piece-selection.component';
+import { MatListModule } from '@angular/material/list';
+import { SuccessDialogComponent } from './success-dialog/success-dialog.component'
+import { MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -21,7 +26,9 @@ import { PieceSelectionComponent } from './piece-selection/piece-selection.compo
     PhotoCaptureComponent,
     HeaderComponent,
     ImageDisplayComponent,
-    PieceSelectionComponent
+    PieceSelectionComponent,
+    SuccessDialogComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -32,12 +39,14 @@ import { PieceSelectionComponent } from './piece-selection/piece-selection.compo
     HttpClientModule,
     MatToolbarModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatListModule,
+    MatDialogModule
   ],
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch()) 
+    provideHttpClient(withFetch())
   ],
   bootstrap: [AppComponent]
 })
