@@ -10,13 +10,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { HeaderComponent } from './header/header.component';
-
+import { ImageDisplayComponent } from './image-display/image-display.component';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import { PieceSelectionComponent } from './piece-selection/piece-selection.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PhotoCaptureComponent,
-    HeaderComponent
+    HeaderComponent,
+    ImageDisplayComponent,
+    PieceSelectionComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +30,9 @@ import { HeaderComponent } from './header/header.component';
     WebcamModule,
     MatIconModule,
     HttpClientModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [
     provideClientHydration(),

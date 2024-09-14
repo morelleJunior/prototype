@@ -1,4 +1,4 @@
-<div class="camera-container">
+<div class="camera-container"  *ngIf="!processedImageBase64">
 
 
   <div class="image-container">
@@ -10,6 +10,7 @@
           <a href="#" class="btn2"><span class="spn2">Aprender !</span></a>
         </button>
       </div>
+
       <div class="capture-camera-container">
 
         <div class="capture-flash" *ngIf="showFlash"></div>
@@ -50,6 +51,8 @@
             <div class="loading"></div>
           </div>
         </div>
+
+ 
 
         <div class="thumbnails">
           <div *ngFor="let imgData of capturedImages; let i = index" class="thumbnail-container">
@@ -96,10 +99,12 @@
         <img [src]="selectedImage.imageAsDataUrl" alt="Selected photo">
       </div>
 
-
       <div *ngIf="capturedImages.length > 0 && !isLoading" class="send-button-container">
         <button class="send-button" (click)="sendCapturedImages()">Enviar Imagens</button>
       </div>
     </div>
   </div>
 </div>
+
+<app-image-display [imageBase64]="processedImageBase64"></app-image-display>
+

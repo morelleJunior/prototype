@@ -1,10 +1,10 @@
 import { Component, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage } from 'ngx-webcam';
 import introJs from 'intro.js';
-import { sendImageToApi, IImageData } from '../services/apiService';
+import { sendImageToApi } from '../services/apiService';
+
 
 interface CapturedImageData {
   image: WebcamImage;
@@ -32,11 +32,16 @@ export class PhotoCaptureComponent {
 
   public uploadProgress = 0;
 
-  private trigger: Subject<void> = new Subject<void>();
+
   private readonly maxImages = 5;
 
   public showFlash = false;
 
+  public processedImageBase64: string | null = null;
+
+  public processedCuts: boolean = false;
+
+  private trigger: Subject<void> = new Subject<void>();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -57,12 +62,8 @@ export class PhotoCaptureComponent {
   }
 
   public triggerSnapshot(): void {
-    if (this.isBrowser && this.capturedImages.length < this.maxImages) {
+    if (this.isBrowser && this.capturedImages.length < 5) {
       this.trigger.next();
-      this.showFlashEffect();
-    } else {
-      this.errorMessage = `Você só pode capturar até ${this.maxImages} imagens.`;
-      this.successMessage = null;
     }
   }
 
@@ -104,9 +105,24 @@ export class PhotoCaptureComponent {
   public async sendCapturedImages(): Promise<void> {
     if (this.capturedImages.length > 0) {
       this.isLoading = true;
-      await this.sendImageRecursively(0);
-    } else {
-      this.errorMessage = 'Nenhuma imagem capturada para enviar';
+      const imageData = this.prepareJsonData(this.capturedImages[0]);
+  
+      try {
+        const response = await sendImageToApi(imageData);
+        console.log('Resposta da API:', response);
+  
+        if (response && response.data && response.data.pythonData && response.data.pythonData.pythonIntegrationResponse) {
+          this.processedImageBase64 = response.data.pythonData.pythonIntegrationResponse.boundingBoxes;
+          this.processedCuts = response.data.pythonData.pythonIntegrationResponse.processedCuts;
+        } else {
+          console.error('Resposta da API não contém as informações esperadas');
+          this.errorMessage = 'Erro: A resposta da API não contém as informações esperadas.';
+        }
+      } catch (error) {
+        console.error('Erro ao enviar imagem:', error);
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 
