@@ -33,19 +33,14 @@ export class PieceSelectionComponent {
       correctly: !this.selectedOptions.includes(piece)
     }));
 
-    console.log('Dados a serem enviados:', { data: responseData });
-
     try {
       const response = await this.pieceService.sendPieceData(responseData);
-      console.log('Enviado com sucesso!', response);
-      console.log(responseData);
 
       if (response.message === 'Success') {
         this.openSuccessDialog();
       }
       
     } catch (error) {
-      console.log(responseData);
       console.error('Erro ao enviar:', error);
     }
   }

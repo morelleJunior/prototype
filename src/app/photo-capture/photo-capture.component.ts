@@ -111,7 +111,6 @@ export class PhotoCaptureComponent {
   
       try {
         const response = await sendImageToApi(imageData);
-        console.log('Resposta da API:', response);
   
         if (response && response.data && response.data.pythonData && response.data.pythonData.pythonIntegrationResponse) {
           this.processedImageBase64 = response.data.pythonData.pythonIntegrationResponse.boundingBoxes;
@@ -134,8 +133,7 @@ export class PhotoCaptureComponent {
   
       try {
         const response = await sendImageToApi(imageData); 
-        console.log('Resposta da API:', response);
-  
+
         this.successMessage = `Imagem ${index + 1} enviada com sucesso`;
         this.errorMessage = null;
         this.capturedImages.splice(index, 1);
