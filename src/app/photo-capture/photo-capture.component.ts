@@ -52,6 +52,7 @@ export class PhotoCaptureComponent {
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
 
+    this.isCameraOn = true;
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -101,13 +102,12 @@ export class PhotoCaptureComponent {
         };
         this.capturedImages.push(newImage);
         this.errorMessage = null;
-  
-        if (!this.cookieService.get('cameraAccepted')) {
-          
-          this.cookieService.set('cameraAccepted', 'true', 365, '/');
-          console.log('Permissão da câmera foi aceita e salva em cookie.');
+        
+        if (!this.cookieService.get('cameraPermission')) {
+          this.cookieService.set('cameraPermission', 'true', 365, '/', '', true, 'None');
+          console.log('Permissão da câmera salva em cookie.');
         }
-  
+
       } else {
         this.errorMessage = `Limite de ${this.maxImages} imagens atingido.`;
       }
@@ -115,6 +115,7 @@ export class PhotoCaptureComponent {
       console.error('Erro: O evento recebido não é uma WebcamImage válida');
     }
   }
+
 
   public async sendCapturedImages(): Promise<void> {
     if (this.capturedImages.length > 0) {
