@@ -5,6 +5,7 @@ import { WebcamImage } from 'ngx-webcam';
 import introJs from 'intro.js';
 import { sendImageToApi } from '../services/apiService';
 import { Piece } from '../piece-selection/piece.interface';
+import { CookieService } from 'ngx-cookie-service';
 
 
 interface CapturedImageData {
@@ -35,7 +36,7 @@ export class PhotoCaptureComponent {
   public uploadProgress = 0;
 
 
-  private readonly maxImages = 5;
+  private readonly maxImages = 1;
 
   public showFlash = false;
 
@@ -45,8 +46,12 @@ export class PhotoCaptureComponent {
 
   private trigger: Subject<void> = new Subject<void>();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cookieService: CookieService 
+  ) {
     this.isBrowser = isPlatformBrowser(platformId);
+
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -96,6 +101,13 @@ export class PhotoCaptureComponent {
         };
         this.capturedImages.push(newImage);
         this.errorMessage = null;
+  
+        if (!this.cookieService.get('cameraAccepted')) {
+          
+          this.cookieService.set('cameraAccepted', 'true', 365, '/');
+          console.log('Permissão da câmera foi aceita e salva em cookie.');
+        }
+  
       } else {
         this.errorMessage = `Limite de ${this.maxImages} imagens atingido.`;
       }

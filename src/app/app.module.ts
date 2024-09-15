@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { SuccessDialogComponent } from './success-dialog/success-dialog.component'
 import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
+    CookieService
   ],
   bootstrap: [AppComponent]
 })
