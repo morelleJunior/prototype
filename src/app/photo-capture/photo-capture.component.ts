@@ -7,7 +7,6 @@ import { sendImageToApi } from '../services/apiService';
 import { Piece } from '../piece-selection/piece.interface';
 import { CookieService } from 'ngx-cookie-service';
 
-
 interface CapturedImageData {
   image: WebcamImage;
   correctlyAssembled: boolean;
@@ -46,6 +45,8 @@ export class PhotoCaptureComponent {
 
   private trigger: Subject<void> = new Subject<void>();
 
+  private detectionInterval: any;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private cookieService: CookieService 
@@ -53,7 +54,63 @@ export class PhotoCaptureComponent {
     this.isBrowser = isPlatformBrowser(platformId);
 
     this.isCameraOn = true;
+
+    if (isPlatformBrowser(this.platformId)) {
+      import('tesseract.js').then(Tesseract => {
+        console.log('Tesseract.js carregado com sucesso no lado do cliente');
+      }).catch(error => {
+        console.error('Erro ao carregar Tesseract.js:', error);
+      });
+    }
+  
   }
+
+  ngOnInit(): void {
+    if (this.isBrowser) {
+      this.startTextDetection();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.detectionInterval) {
+      clearInterval(this.detectionInterval);
+    }
+  }
+
+  startTextDetection(): void {
+    this.detectionInterval = setInterval(async () => {
+      const videoElement = document.querySelector('video') as HTMLVideoElement;
+      if (videoElement) {
+        const text = await this.detectText(videoElement);
+        if (text.includes('capture' as string)) {
+          this.triggerSnapshot();
+        }
+      }
+    }, 3000);
+  }
+
+  async detectText(videoElement: HTMLVideoElement): Promise<string> {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      const context = canvas.getContext('2d');
+      if (context) {
+
+        context.filter = 'grayscale(100%)';
+        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        import('tesseract.js').then(Tesseract => {
+          Tesseract.recognize(canvas, 'eng', { 
+            logger: m => console.log(m)
+          }).then(result => {
+            resolve(result.data.text);
+          });
+        });
+      }
+    });
+  }
+
+
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
@@ -70,7 +127,7 @@ export class PhotoCaptureComponent {
   }
 
   public triggerSnapshot(): void {
-    if (this.isBrowser && this.capturedImages.length < 5) {
+    if (this.capturedImages.length < this.maxImages) {
       this.trigger.next();
     }
   }
