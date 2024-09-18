@@ -30,6 +30,7 @@
 .capture-camera-container {
   display: flex;
   justify-content: center;
+  width: 100%;
 
   @media (max-width: 600px) {
     margin: 1rem;
@@ -95,9 +96,15 @@
 }
 
 .gallery {
+  display: flex;
   margin: 1rem;
   min-height: 200px;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .gallery h3 {
@@ -112,7 +119,9 @@ img {
 }
 
 .thumbnails {
-  display: flex;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;  margin: 1rem;
+
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
@@ -121,6 +130,11 @@ img {
 .thumbnail-container {
   position: relative;
   display: inline-block;
+}
+
+.images-container {
+  display: flex;
+  justify-content: center;
 }
 
 .thumbnail {
@@ -437,7 +451,6 @@ button {
 .form-container {
   display: flex;
   flex-direction: column; 
-  align-items: center;
   justify-content: center;
   gap: 2rem; 
   padding: 2rem;
