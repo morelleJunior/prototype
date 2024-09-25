@@ -35,9 +35,11 @@
         <div class="capture-camera-container" *ngIf="capturedImages.length <= 0 && !isLoading">
           <div class="capture-flash" *ngIf="showFlash"></div>
 
+
           <div>
             <webcam *ngIf="isBrowser && isCameraOn" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
               class="custom-webcam" [videoOptions]="videoOptions">
+              <video autoplay class="custom-video"></video> 
             </webcam>
 
             <div class="camera-action-button">

@@ -73,10 +73,31 @@ export class PhotoCaptureComponent {
     height: { ideal: 1080 }
   };
 
+
+
   ngOnInit(): void {
     if (this.isBrowser) {
       this.startTextDetection();
     }
+  }
+
+  startCamera(): void {
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { ideal: 1920 }, 
+        height: { ideal: 1080 }, 
+        frameRate: { ideal: 30 }
+      }
+    })
+    .then(stream => {
+      const videoElement = document.querySelector('video') as HTMLVideoElement;
+      if (videoElement) {
+        videoElement.srcObject = stream;
+      }
+    })
+    .catch(error => {
+      console.error('Erro ao acessar a câmera: ', error);
+    });
   }
 
   ngOnDestroy(): void {
