@@ -29,6 +29,9 @@ export class PhotoCaptureComponent {
   public successMessage: string | null = null;
   public isLoading = false;
 
+  public base64ImageString: string | null = null;
+
+
   public timer: number | null = null;
   public showTimer = false;
 
@@ -64,6 +67,11 @@ export class PhotoCaptureComponent {
     }
   
   }
+
+  public videoOptions: MediaTrackConstraints = {
+    width: { ideal: 1920 },
+    height: { ideal: 1080 }
+  };
 
   ngOnInit(): void {
     if (this.isBrowser) {
@@ -121,11 +129,6 @@ export class PhotoCaptureComponent {
   }
 
 
-  private showFlashEffect(): void {
-    this.showFlash = true;
-    setTimeout(() => this.showFlash = false, 100);
-  }
-
   public triggerSnapshot(): void {
     if (this.capturedImages.length < this.maxImages) {
       this.trigger.next();
@@ -159,7 +162,13 @@ export class PhotoCaptureComponent {
         };
         this.capturedImages.push(newImage);
         this.errorMessage = null;
-        
+
+        const fullBase64Image = webcamImage.imageAsDataUrl;
+
+        const base64Only = fullBase64Image.split(',')[1];
+  
+        this.base64ImageString = base64Only;
+ 
         if (!this.cookieService.get('cameraPermission')) {
           this.cookieService.set('cameraPermission', 'true', 365, '/', '', true, 'None');
           console.log('Permissão da câmera salva em cookie.');
@@ -181,6 +190,8 @@ export class PhotoCaptureComponent {
   
       try {
         const response = await sendImageToApi(imageData);
+        
+        
   
         if (response && response.data && response.data.pythonData && response.data.pythonData.pythonIntegrationResponse) {
           this.processedImageBase64 = response.data.pythonData.pythonIntegrationResponse.boundingBoxes;
@@ -197,36 +208,7 @@ export class PhotoCaptureComponent {
     }
   }
 
-  private async sendImageRecursively(index: number): Promise<void> {
-    if (index < this.capturedImages.length) {
-      const imageData = this.prepareJsonData(this.capturedImages[index]);
-  
-      try {
-        const response = await sendImageToApi(imageData); 
 
-        this.successMessage = `Imagem ${index + 1} enviada com sucesso`;
-        this.errorMessage = null;
-        this.capturedImages.splice(index, 1);
-  
-        await this.sendImageRecursively(index);
-      } catch (error) {
-        if (error instanceof Error) {
-
-          console.error('Erro ao enviar imagem:', error);
-          this.errorMessage = `Erro ao enviar imagem ${index + 1}: ${error.message || 'Desconhecido'}`;
-        } else {
-          console.error('Erro desconhecido ao enviar imagem:', error);
-          this.errorMessage = `Erro ao enviar imagem ${index + 1}: Erro desconhecido`;
-        }
-        this.isLoading = false;
-      }
-    } else {
-      this.isLoading = false;
-      if (this.capturedImages.length === 0) {
-        this.successMessage = 'Todas as imagens foram enviadas com sucesso';
-      }
-    }
-  }
 
 
   private prepareJsonData(imageData: CapturedImageData): any {
