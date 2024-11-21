@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://taiffapi.avlq.online",
+    "target": "http://localhost:6000",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
